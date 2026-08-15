@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import prisma from "../db/prisma.js";
+import { randomBytes } from "crypto";
 
 export async function findUserByEmail(email: string) {
   return prisma.user.findUnique({
@@ -26,4 +27,26 @@ export async function createUser(
       passwordHash
     }
   });
+}
+
+export async function comparePassword(
+  password: string,
+  passwordHash: string
+) {
+  return bcrypt.compare(password, passwordHash);
+}
+
+export async function createSession(userId: number) {
+    const token = randomBytes(32).toString("hex");
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    return prisma.session.create({
+        data: {
+            token,
+            userId,
+            expiresAt
+        }
+    });
 }
