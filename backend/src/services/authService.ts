@@ -49,4 +49,20 @@ export async function createSession(userId: number) {
             expiresAt
         }
     });
+  }
+
+export async function findSessionByToken(token: string) {
+  return prisma.session.findUnique({
+      where: {
+          token
+      }
+   });
+}
+
+export async function findUserById(id: number) {
+  return prisma.user.findUnique({
+      where: {
+          id
+      }
+  });
 }
