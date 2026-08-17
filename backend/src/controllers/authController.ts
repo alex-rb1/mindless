@@ -55,8 +55,6 @@ export async function login(
 
     const user = await findUserByEmail(email);
 
-    console.log("User found:", user); // Debugging line
-
     if (!user) {
       return res.status(401).json({
         error: "Invalid email or password.",
@@ -67,8 +65,6 @@ export async function login(
       password,
       user.passwordHash
     );
-
-    console.log("Password matches:", passwordMatches); // Debugging line
 
     if (!passwordMatches) {
       return res.status(401).json({
@@ -95,4 +91,17 @@ export async function login(
   } catch (error) {
     next(error);
   }
+}
+
+export async function me(
+  req: Request,
+  res: Response
+) {
+  return res.status(200).json({
+    user: {
+      id: req.user!.id,
+      name: req.user!.name,
+      email: req.user!.email,
+    },
+  });
 }
