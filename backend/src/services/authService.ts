@@ -66,3 +66,11 @@ export async function findUserById(id: number) {
       }
   });
 }
+
+export async function deleteSession(token: string) {
+  return prisma.session.delete({
+      where: {
+          token
+      }
+  });
+}

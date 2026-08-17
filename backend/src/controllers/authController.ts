@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { findUserByEmail, hashPassword, createUser, comparePassword, createSession } from "../services/authService.js";
+import { findUserByEmail, hashPassword, createUser, comparePassword, createSession, deleteSession } from "../services/authService.js";
 
 export async function register(
   req: Request,
@@ -104,4 +104,29 @@ export async function me(
       email: req.user!.email,
     },
   });
+}
+
+export async function logout(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const sessionToken = req.cookies.sessionToken;
+
+    await deleteSession(sessionToken);
+
+    res.clearCookie("sessionToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+
+    return res.status(200).json({
+      message: "Logged out successfully.",
+    });
+
+  } catch (error) {
+    next(error);
+  }
 }
