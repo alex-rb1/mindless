@@ -2,6 +2,18 @@
 
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/dist/client/link";
+
 export default function SignupPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -32,41 +44,83 @@ export default function SignupPage() {
         return;
     }
 
-    setSuccess("Account created successfully.");
+    setSuccess("Account created successfully. You can now log in.");
     setError("");
     }
 
-    return (
-  <main>
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Name"
-    />
+return (
+  <main className="flex min-h-screen items-center justify-center p-6">
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Create your account</CardTitle>
+        <CardDescription>
+          Start using Mindless to capture now and organize later.
+        </CardDescription>
+      </CardHeader>
 
-    <input
-      type="email"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      placeholder="Email"
-    />
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+            />
+          </div>
 
-    <input
-      type="password"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      placeholder="Password"
-    />
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+            />
+          </div>
 
-    <button type="submit">
-      Create Account
-    </button>
-  </form>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Create a password"
+            />
+          </div>
 
-  {error && <p>{error}</p>}
-  {success && <p>{success}</p>}
-</main>
+          {error && (
+            <p className="text-sm text-destructive">
+              {error}
+            </p>
+          )}
+
+          {success && (
+            <p className="text-sm text-muted-foreground">
+              {success}
+            </p>
+          )}
+
+          <Button type="submit" className="w-full">
+            Create account
+          </Button>
+        </form>
+
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="font-medium text-foreground underline underline-offset-4"
+          >
+            Log in
+          </Link>
+        </p>
+      </CardContent>
+    </Card>
+  </main>
 );
 }
