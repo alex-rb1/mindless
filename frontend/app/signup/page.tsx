@@ -14,12 +14,15 @@ import {
 } from "@/components/ui/card";
 import Link from "next/dist/client/link";
 
+import { useRouter } from "next/navigation";
+
 export default function SignupPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const router = useRouter();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -44,8 +47,8 @@ export default function SignupPage() {
         return;
     }
 
-    setSuccess("Account created successfully. You can now log in.");
     setError("");
+    router.push("/login");
     }
 
 return (
