@@ -14,3 +14,14 @@ export async function createInboxItem(
     },
   });
 }
+
+export async function getInboxItems(userId: number) {
+  return prisma.inboxItem.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
