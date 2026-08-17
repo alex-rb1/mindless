@@ -19,9 +19,11 @@ model User {
   passwordHash String
 
   // Timestamps
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  sessions  Session[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions   Session[]
+  inboxItems InboxItem[]
 }
 
 model Session {
@@ -31,5 +33,21 @@ model Session {
   createdAt DateTime @default(now())
   expiresAt DateTime
 
-  user      User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model InboxItem {
+  id        Int       @id @default(autoincrement())
+  title     String
+  priority  Priority?
+  createdAt DateTime  @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
 }
