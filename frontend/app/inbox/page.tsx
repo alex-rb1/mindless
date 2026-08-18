@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type InboxItem = {
   id: number;
@@ -16,12 +23,19 @@ type InboxItem = {
 export default function InboxPage() {
   const [title, setTitle] = useState("");
   const [items, setItems] = useState<InboxItem[]>([]);
+  const [priority, setPriority] = useState<
+    "LOW" | "MEDIUM" | "HIGH" | ""
+  >("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
+  const [editPriority, setEditPriority] = useState<
+    "LOW" | "MEDIUM" | "HIGH" | ""
+  >("");
 
   function startEditing(item: InboxItem) {
     setEditingId(item.id);
     setEditTitle(item.title);
+    setEditPriority(item.priority ?? "");
   }
 
   async function loadItems() {
@@ -52,6 +66,7 @@ export default function InboxPage() {
         credentials: "include",
         body: JSON.stringify({
             title: editTitle,
+            priority: editPriority || null,
         }),
     });
 
@@ -70,6 +85,7 @@ export default function InboxPage() {
 
     setEditingId(null);
     setEditTitle("");
+    setEditPriority("");
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -87,6 +103,7 @@ export default function InboxPage() {
         credentials: "include",
         body: JSON.stringify({
             title,
+            ...(priority && { priority }),
         }),
     });
 
@@ -103,6 +120,7 @@ export default function InboxPage() {
     ]);
 
     setTitle("");
+    setPriority("");
   }
 
   useEffect(() => {
@@ -126,6 +144,23 @@ export default function InboxPage() {
             placeholder="What's on your mind?"
           />
 
+          <Select
+            value={priority}
+            onValueChange={(value) =>
+                setPriority(value as "LOW" | "MEDIUM" | "HIGH")
+            }
+          >
+            <SelectTrigger className="w-36">
+                <SelectValue placeholder="Prioity" />
+            </SelectTrigger>
+
+            <SelectContent>
+                <SelectItem value="LOW">Low</SelectItem>
+                <SelectItem value="MEDIUM">Medium</SelectItem>
+                <SelectItem value="HIGH">High</SelectItem>
+            </SelectContent>
+          </Select>
+
           <Button type="submit">
             Add
           </Button>
@@ -142,6 +177,23 @@ export default function InboxPage() {
                                 value={editTitle}
                                 onChange={(e) => setEditTitle(e.target.value)}
                             />
+
+                            <Select
+                                value={editPriority}
+                                onValueChange={(value) =>
+                                    setEditPriority(value as "LOW" | "MEDIUM" | "HIGH")
+                                }
+                            >
+                                <SelectTrigger className="w-36">
+                                    <SelectValue placeholder="Priority" />
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    <SelectItem value="LOW">Low</SelectItem>
+                                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                                    <SelectItem value="HIGH">High</SelectItem>
+                                </SelectContent>
+                            </Select>
 
                             <Button
                                 type="button"
