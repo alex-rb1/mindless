@@ -127,6 +127,24 @@ export default function InboxPage() {
     loadItems();
   }, []);
 
+  async function deleteItem(id: number) {
+    const response = await fetch(`http://localhost:4000/inbox/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        console.error(data.error);
+        return;
+    }
+
+    setItems((currentItems) =>
+        currentItems.filter((item) => item.id !== id)
+    );
+ }
+
   return (
     <main className="mx-auto min-h-screen max-w-3xl p-6">
       <div className="space-y-6">
@@ -224,13 +242,23 @@ export default function InboxPage() {
                     )}
 
                     {editingId !== item.id && (
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => startEditing(item)}
-                        >
-                            Edit
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => startEditing(item)}
+                            >
+                                Edit
+                            </Button>
+
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                onClick={() => deleteItem(item.id)}
+                            >
+                                Delete
+                            </Button>
+                        </div>
                     )}
                 </div>
             ))}
