@@ -53,3 +53,11 @@ export async function updateInboxItem(
     },
   });
 }
+
+export async function deleteInboxItem(id: number) {
+  return prisma.inboxItem.delete({
+    where: {
+      id,
+    },
+  });
+}

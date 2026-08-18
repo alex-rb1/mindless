@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { createInboxItem, getInboxItems, findInboxItemById, updateInboxItem } from "../services/inboxService.js";
+import { createInboxItem, getInboxItems, findInboxItemById, updateInboxItem, deleteInboxItem } from "../services/inboxService.js";
 
 export async function createItem(
   req: Request,
@@ -85,6 +85,41 @@ export async function updateItem(
 
     return res.status(200).json({
         item: updatedItem,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteItem(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      return res.status(400).json({
+        error: "Invalid inbox item ID.",
+      });
+    }
+
+    const existingItem = await findInboxItemById(
+      id,
+      req.user!.id
+    );
+
+    if (!existingItem) {
+      return res.status(404).json({
+        error: "Inbox item not found.",
+      });
+    }
+
+    await deleteInboxItem(id);
+
+    return res.status(200).json({
+      message: "Inbox item deleted successfully.",
     });
   } catch (error) {
     next(error);
