@@ -25,3 +25,31 @@ export async function getInboxItems(userId: number) {
     },
   });
 }
+
+export async function findInboxItemById(
+  id: number,
+  userId: number
+) {
+  return prisma.inboxItem.findFirst({
+    where: {
+      id,
+      userId,
+    },
+  });
+}
+
+export async function updateInboxItem(
+  id: number,
+  title: string,
+  priority: Priority | null
+) {
+  return prisma.inboxItem.update({
+    where: {
+      id,
+    },
+    data: {
+      title,
+      priority,
+    },
+  });
+}
