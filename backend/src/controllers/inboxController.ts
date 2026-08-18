@@ -1,6 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { createInboxItem, getInboxItems, findInboxItemById, updateInboxItem, deleteInboxItem } from "../services/inboxService.js";
 
+const validPriorities = ["LOW", "MEDIUM", "HIGH"];
+
 export async function createItem(
   req: Request,
   res: Response,
@@ -9,15 +11,21 @@ export async function createItem(
   try {
     const { title, priority } = req.body;
 
-    if (!title) {
+    if (!title || !title.trim()) {
         return res.status(400).json({
             error: "Title is required.",
         });
     }
 
+    if (priority && !validPriorities.includes(priority)) {
+        return res.status(400).json({
+            error: "Invalid priority value.",
+        });
+    }
+
     const item = await createInboxItem(
         req.user!.id,
-        title,
+        title.trim(),
         priority
     );
 
@@ -60,6 +68,12 @@ export async function updateItem(
         });
     }
 
+    if (priority && !validPriorities.includes(priority)) {
+        return res.status(400).json({
+            error: "Invalid priority value.",
+        });
+    }
+
     const existingItem = await findInboxItemById(
         id,
         req.user!.id
@@ -71,7 +85,7 @@ export async function updateItem(
         });
     }
 
-    if (!title) {
+    if (!title || !title.trim()) {
         return res.status(400).json({
             error: "Title is required.",
         });
@@ -79,7 +93,7 @@ export async function updateItem(
 
     const updatedItem = await updateInboxItem(
         id,
-        title,
+        title.trim(),
         priority ?? null
     );
 
