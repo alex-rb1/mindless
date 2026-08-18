@@ -172,7 +172,10 @@ return (
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex gap-2">
+      <form 
+        onSubmit={handleSubmit} 
+        className="flex w-full flex-col gap-2 sm:flex-row"
+      >
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -185,7 +188,7 @@ return (
             setPriority(value as "LOW" | "MEDIUM" | "HIGH")
           }
         >
-          <SelectTrigger className="w-36">
+          <SelectTrigger className="w-full sm:w-36">
             <SelectValue placeholder="Priority" />
           </SelectTrigger>
 
@@ -226,7 +229,7 @@ return (
               className="rounded-lg border p-4"
             >
               {editingId === item.id ? (
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
                   <Input
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
@@ -240,7 +243,7 @@ return (
                       )
                     }
                   >
-                    <SelectTrigger className="w-36">
+                    <SelectTrigger className="w-full sm:w-36">
                       <SelectValue placeholder="Priority" />
                     </SelectTrigger>
 
