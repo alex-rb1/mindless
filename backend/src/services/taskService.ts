@@ -26,3 +26,14 @@ export async function createTask(data: CreateTaskData) {
         },
     });
 }
+
+export async function getTasks(userId: number) {
+    return prisma.task.findMany({
+        where: {
+            userId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+    });
+}

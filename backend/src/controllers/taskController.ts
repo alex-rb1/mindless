@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { createTask } from "../services/taskService.js";
+import { createTask, getTasks } from "../services/taskService.js";
 import { create } from "node:domain";
 
 const validPriorities = ["LOW", "MEDIUM", "HIGH"];
@@ -63,6 +63,22 @@ export async function createTaskItem(
       task,
     });
 
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getTaskItems(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const tasks = await getTasks(req.user!.id);
+
+    return res.status(200).json({
+      tasks,
+    });
   } catch (error) {
     next(error);
   }
