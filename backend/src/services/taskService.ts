@@ -66,3 +66,11 @@ export async function updateTask(
     data,
   });
 }
+
+export async function deleteTask(id: number) {
+  return prisma.task.delete({
+    where: {
+      id,
+    },
+  })
+}

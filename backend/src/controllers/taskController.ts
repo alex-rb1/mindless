@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { createTask, getTasks, findTaskById, updateTask } from "../services/taskService.js";
+import { createTask, getTasks, findTaskById, updateTask, deleteTask } from "../services/taskService.js";
 import { create } from "node:domain";
 
 const validPriorities = ["LOW", "MEDIUM", "HIGH"];
@@ -161,6 +161,41 @@ export async function updateTaskItem(
       task,
     });
 
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteTaskItem(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      return res.status(400).json({
+        error: "Invalid task ID.",
+      });
+    }
+
+    const existingTask = await findTaskById(
+      id,
+      req.user!.id
+    );
+
+    if (!existingTask) {
+      return res.status(404).json({
+        error: "Task not found.",
+      });
+    }
+
+    await deleteTask(id);
+
+    return res.status(200).json({
+      message: "Task deleted.",
+    });
   } catch (error) {
     next(error);
   }
