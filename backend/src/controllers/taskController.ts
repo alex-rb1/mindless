@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { createTask, getTasks } from "../services/taskService.js";
+import { createTask, getTasks, findTaskById, updateTask } from "../services/taskService.js";
 import { create } from "node:domain";
 
 const validPriorities = ["LOW", "MEDIUM", "HIGH"];
@@ -79,6 +79,88 @@ export async function getTaskItems(
     return res.status(200).json({
       tasks,
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateTaskItem(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      return res.status(400).json({
+        error: "Invalid task ID.",
+      });
+    }
+
+    const existingTask = await findTaskById(
+      id, 
+      req.user!.id
+    );
+
+    if (!existingTask) {
+      return res.status(404).json({
+        error: "Task not found.",
+      });
+    }
+
+    const {
+      title,
+      description,
+      dueDate,
+      priority,
+      status,
+    } = req.body;
+
+    if (title !== undefined && !title.trim()) {
+      return res.status(400).json({
+        error: "Title cannot be empty.",
+      });
+    }
+
+    if (priority && !validPriorities.includes(priority)) {
+      return res.status(400).json({
+        error: "Invalid priority value.",
+      });
+    }
+
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({
+        error: "Invalid status value.",
+      });
+    }
+
+    let parsedDueDate: Date | null | undefined;
+
+    if (dueDate === null) {
+      parsedDueDate = null;
+    } else if (dueDate !== undefined) {
+      parsedDueDate = new Date(dueDate);
+
+      if (Number.isNaN(parsedDueDate.getTime())) {
+        return res.status(400).json({
+          error: "Invalid due date."
+        })
+      }
+    }
+
+    const task = await updateTask(id, {
+      ...(title !== undefined && {title: title.trim() }),
+      ...(description !== undefined && { description }),
+      ...(parsedDueDate !== undefined && { dueDate: parsedDueDate }),
+      ...(priority !== undefined && { priority }),
+      ...(status !== undefined && { status }),
+    })
+
+    return res.status(200).json({
+      task,
+    });
+
   } catch (error) {
     next(error);
   }

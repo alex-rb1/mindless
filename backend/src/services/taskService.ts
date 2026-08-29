@@ -37,3 +37,32 @@ export async function getTasks(userId: number) {
         },
     });
 }
+
+type UpdateTaskData = {
+  title?: string;
+  description?: string | null;
+  dueDate?: Date | null;
+  priority?: Priority | null;
+  status?: TaskStatus;
+}
+
+export async function findTaskById(id: number, userId: number) {
+  return prisma.task.findFirst({
+    where: {
+      id,
+      userId,
+    },
+  });
+}
+
+export async function updateTask(
+  id: number,
+  data: UpdateTaskData
+) {
+  return prisma.task.update({
+    where: {
+      id,
+    },
+    data,
+  });
+}
