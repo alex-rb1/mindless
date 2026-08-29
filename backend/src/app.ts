@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
-import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import inboxRouter from "./routes/inbox.js";
+import authRouter from "./routes/auth.js";
+import taskRouter from "./routes/tasks.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { requireAuth } from "./middleware/requireAuth.js";
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use("/inbox", inboxRouter);
+app.use("/tasks", taskRouter);
 
 // Routes
 app.get("/health", (req, res) => {
