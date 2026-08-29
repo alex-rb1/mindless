@@ -74,3 +74,36 @@ export async function deleteTask(id: number) {
     },
   })
 }
+
+type ProcessInboxData = {
+  userId: number;
+  inboxItemId: number;
+  title: string;
+  description?: string;
+  dueDate?: Date;
+  priority?: Priority;
+  status?: TaskStatus;
+};
+
+export async function processInboxItem(data: ProcessInboxData) {
+  return prisma.$transaction(async (tx) => {
+    const task = await tx.task.create({
+      data: {
+        userId: data.userId,
+        title: data.title,
+        description: data.description ?? null,
+        dueDate: data.dueDate ?? null,
+        priority: data.priority ?? null,
+        ...(data.status && { status: data.status }),
+      },
+    });
+
+    await tx.inboxItem.delete({
+      where: {
+        id: data.inboxItemId,
+      },
+    });
+
+    return task;
+  });
+}

@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import { createTask, getTasks, findTaskById, updateTask, deleteTask } from "../services/taskService.js";
+import { createTask, getTasks, findTaskById, updateTask, deleteTask, processInboxItem } from "../services/taskService.js";
 import { create } from "node:domain";
+import { findInboxItemById } from "../services/inboxService.js";
 
 const validPriorities = ["LOW", "MEDIUM", "HIGH"];
 const validStatuses = ["TODO", "IN_PROGRESS", "COMPLETED"];
@@ -196,6 +197,88 @@ export async function deleteTaskItem(
     return res.status(200).json({
       message: "Task deleted.",
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function processInboxItemToTask(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const inboxItemId = Number(req.params.id);
+
+    if (Number.isNaN(inboxItemId)) {
+      return res.status(400).json({
+        error: "Invlaid inbox item ID.",
+      });
+    }
+
+    const inboxItem = await findInboxItemById(
+      inboxItemId,
+      req.user!.id
+    );
+
+    if (!inboxItem) {
+      return res.status(404).json({
+        error: "Inbox item not found.",
+      });
+    }
+
+    const {
+      title,
+      description,
+      dueDate,
+      priority,
+      status,
+    } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({
+        error: "Title is required.",
+      });
+    }
+
+    if (priority && !validPriorities.includes(priority)) {
+      return res.status(400).json({
+        error: "Invalid priority value.",
+      });
+    }
+
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({
+        error: "Invalid status value.",
+      });
+    }
+
+    let parsedDueDate: Date | undefined;
+
+    if (dueDate) {
+      parsedDueDate = new Date(dueDate);
+
+      if (Number.isNaN(parsedDueDate.getTime())) {
+        return res.status(400).json({
+          error: "Invalid due date.",
+        });
+      }
+    }
+
+    const task = await processInboxItem({
+      userId: req.user!.id,
+      inboxItemId,
+      title: title.trim(),
+      ...(description !== undefined && { description }),
+      ...(parsedDueDate !== undefined && { dueDate: parsedDueDate }),
+      ...(priority !== undefined && { priority }),
+      ...(status !== undefined && { status }),
+    });
+
+    return res.status(201).json({
+      task,
+    })
+
   } catch (error) {
     next(error);
   }
