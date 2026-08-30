@@ -4,11 +4,13 @@ import ProcessTaskDialog from "./components/ProcessTaskDialog";
 import InboxCaptureForm from "./components/InboxCaptureForm";
 import InboxItemCard from "./components/InboxItem"
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // Types
 import type { InboxItem, Priority } from "./types";
 
 export default function InboxPage() {
+  const router = useRouter();
   // Page state
   const [title, setTitle] = useState("");
   const [items, setItems] = useState<InboxItem[]>([]);
@@ -56,7 +58,13 @@ export default function InboxPage() {
         credentials: "include",
     });
 
+    if (response.status === 401) {
+      router.replace("/login");
+      return;
+    }
+
     const data = await response.json();
+
 
     if (!response.ok) {
         console.error(data.error);

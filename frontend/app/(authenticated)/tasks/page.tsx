@@ -3,10 +3,13 @@
 import CreateTaskForm from "./components/CreateTaskForm";
 import TaskItem from "./components/TaskItem";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Priority, Task, TaskStatus } from "./types";
 
 export default function TasksPage() {
+    const router = useRouter();
+    
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -143,6 +146,11 @@ export default function TasksPage() {
         const response = await fetch("http://localhost:4000/tasks", {
             credentials: "include",
         });
+
+        if (response.status === 401) {
+            router.replace("/login");
+            return;
+        }
 
         const data = await response.json();
 
