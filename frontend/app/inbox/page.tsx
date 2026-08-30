@@ -1,35 +1,15 @@
 "use client";
 
+import ProcessTaskDialog from "./components/ProcessTaskDialog";
+import InboxCaptureForm from "./components/InboxCaptureForm";
+import InboxItemCard from "./components/InboxItem"
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-
-type InboxItem = {
-  id: number;
-  title: string;
-  priority: "LOW" | "MEDIUM" | "HIGH" | null;
-  createdAt: string;
-  userId: number;
-};
+// Types
+import type { InboxItem, Priority } from "./types";
 
 export default function InboxPage() {
+  // Page state
   const [title, setTitle] = useState("");
   const [items, setItems] = useState<InboxItem[]>([]);
   const [priority, setPriority] = useState<
@@ -51,8 +31,9 @@ export default function InboxPage() {
   const [processDescription, setProcessDescription] = useState("");
   const [processDueDate, setProcessDueDate] = useState("");
   const [processPriority, setProcessPriority] =
-    useState<"LOW" | "MEDIUM" | "HIGH" | "">("");
+    useState<Priority | "">("");
 
+  // Editing / processing setup
   function startEditing(item: InboxItem) {
     setEditingId(item.id);
     setEditTitle(item.title);
@@ -68,6 +49,7 @@ export default function InboxPage() {
     setProcessPriority(item.priority ?? "");
   }
 
+  // Inbox API handlers
   async function loadItems() {
     try {
     const response = await fetch("http://localhost:4000/inbox", {
@@ -164,7 +146,8 @@ export default function InboxPage() {
     setTitle("");
     setPriority("");
   }
-
+  
+  // Initial data load
   useEffect(() => {
     loadItems();
   }, []);
@@ -231,6 +214,7 @@ export default function InboxPage() {
   }
 }
 
+// Render
 return (
   <main className="mx-auto min-h-screen max-w-3xl p-6">
     <div className="space-y-6">
@@ -241,37 +225,13 @@ return (
         </p>
       </div>
 
-      <form 
-        onSubmit={handleSubmit} 
-        className="flex w-full flex-col gap-2 sm:flex-row"
-      >
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="What's on your mind?"
-        />
-
-        <Select
-          value={priority}
-          onValueChange={(value) =>
-            setPriority(value as "LOW" | "MEDIUM" | "HIGH")
-          }
-        >
-          <SelectTrigger className="w-full sm:w-36">
-            <SelectValue placeholder="Priority" />
-          </SelectTrigger>
-
-          <SelectContent>
-            <SelectItem value="LOW">Low</SelectItem>
-            <SelectItem value="MEDIUM">Medium</SelectItem>
-            <SelectItem value="HIGH">High</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Button type="submit">
-          Add
-        </Button>
-      </form>
+      <InboxCaptureForm
+        title={title}
+        priority={priority}
+        onTitleChange={setTitle}
+        onPriorityChange={setPriority}
+        onSubmit={handleSubmit}
+      />
 
       {error && (
         <p className="text-sm text-destructive">
@@ -293,167 +253,45 @@ return (
       ) : (
         <div className="space-y-3">
           {items.map((item) => (
-            <div
+            <InboxItemCard
               key={item.id}
-              className="rounded-lg border p-4"
-            >
-              {editingId === item.id ? (
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <Input
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                  />
+              item={item}
 
-                  <Select
-                    value={editPriority}
-                    onValueChange={(value) =>
-                      setEditPriority(
-                        value as "LOW" | "MEDIUM" | "HIGH"
-                      )
-                    }
-                  >
-                    <SelectTrigger className="w-full sm:w-36">
-                      <SelectValue placeholder="Priority" />
-                    </SelectTrigger>
+              isEditing={editingId === item.id}
+              editTitle={editTitle}
+              editPriority={editPriority}
 
-                    <SelectContent>
-                      <SelectItem value="LOW">Low</SelectItem>
-                      <SelectItem value="MEDIUM">Medium</SelectItem>
-                      <SelectItem value="HIGH">High</SelectItem>
-                    </SelectContent>
-                  </Select>
+              onEditTitleChange={setEditTitle}
+              onEditPriorityChange={setEditPriority}
 
-                  <Button
-                    type="button"
-                    onClick={() => saveEdit(item.id)}
-                  >
-                    Save
-                  </Button>
+              onStartProcessing={() => startProcessing(item)}
+              onStartEditing={() => startEditing(item)}
+              onSaveEdit={() => saveEdit(item.id)}
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      setEditingId(null);
-                      setEditTitle("");
-                      setEditPriority("");
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <p className="font-medium">
-                    {item.title}
-                  </p>
+              onCancelEdit={() => {
+                setEditingId(null);
+                setEditTitle("");
+                setEditPriority("");
+              }}
 
-                  {item.priority && (
-                    <p className="text-sm text-muted-foreground">
-                      {item.priority}
-                    </p>
-                  )}
-                </>
-              )}
-
-              {editingId !== item.id && (
-                <div className="mt-3 flex justify-end gap-2">
-                  <Button
-                    onClick={() => startProcessing(item)}
-                  >
-                    Process
-                  </Button>
-                  
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => startEditing(item)}
-                  >
-                    Edit
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => deleteItem(item.id)}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              )}
-            </div>
+              onDelete={() => deleteItem(item.id)}
+            />
           ))}
         </div>
       )}
     </div>
-    <Dialog
+    <ProcessTaskDialog
       open={processingItem !== null}
-      onOpenChange={(open) => {
-        if (!open) {
-          setProcessingItem(null);
-        }
-      }}
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Process into Task</DialogTitle>
-          <DialogDescription>
-            Add any details before converting this inbox item into a task.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <Input
-            value={processTitle}
-            onChange={(e) => setProcessTitle(e.target.value)}
-            placeholder="Task title"
-          />
-
-          <Input
-            value={processDescription}
-            onChange={(e) => setProcessDescription(e.target.value)}
-            placeholder="Description"
-          />
-
-          <Input
-            type="date"
-            value={processDueDate}
-            onChange={(e) => setProcessDueDate(e.target.value)}
-          />
-
-          <Select
-            value={processPriority}
-            onValueChange={(value) =>
-              setProcessPriority(
-                value as "LOW" | "MEDIUM" | "HIGH"
-              )
-            }
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Priority" />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="LOW">Low</SelectItem>
-              <SelectItem value="MEDIUM">Medium</SelectItem>
-              <SelectItem value="HIGH">High</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => setProcessingItem(null)}
-          >
-            Cancel
-          </Button>
-
-          <Button onClick={handleProcessItem}>
-            Create Task
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      title={processTitle}
+      description={processDescription}
+      dueDate={processDueDate}
+      priority={processPriority}
+      onTitleChange={setProcessTitle}
+      onDescriptionChange={setProcessDescription}
+      onDueDateChange={setProcessDueDate}
+      onPriorityChange={setProcessPriority}
+      onCancel={() => setProcessingItem(null)}
+      onCreate={handleProcessItem}
+    />
   </main>
 )};
