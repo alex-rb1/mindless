@@ -266,13 +266,18 @@ export default function TasksPage() {
         )}
 
         {loading ? (
-            <p className="mt-4 text-muted-foreground">
-                Loading tasks...
-            </p>
+            <div className="mt-6 rounded-lg border border-dashed p-8 text-center">
+                <p className="text-sm text-muted-foreground">
+                    Loading tasks...
+                </p>
+            </div>
         ) : tasks.length === 0 ? (
-            <p className="mt-4 text-muted-foreground">
-                No tasks yet.
-            </p>
+            <div className="mt-6 rounded-lg border border-dashed p-8 text-center">
+                <p className="font-medium">No tasks yet</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                    Create a task above or process an item from your inbox.
+                </p>
+            </div>
         ) : (
             <div className="mt-6 space-y-8">
                 <section>

@@ -248,9 +248,11 @@ return (
       )}
 
       {loading ? (
-        <p className="text-sm text-muted-foreground">
-          Loading inbox...
-        </p>
+        <div className="rounded-lg border border-dashed p-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            Loading inbox...
+          </p>
+        </div>
       ) : items.length === 0 ? (
         <div className="rounded-lg border border-dashed p-8 text-center">
             <p className="font-medium">Your inbox is empty</p>

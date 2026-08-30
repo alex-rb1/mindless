@@ -128,9 +128,11 @@ export default function DashboardPage() {
             )}
 
             {loading ? (
-                <p className="mt-6 text-muted-foreground">
-                    Loading dashboard...
-                </p>
+                <div className="mt-6 rounded-lg border border-dashed p-8 text-center">
+                    <p className="text-sm text-muted-foreground">
+                        Loading dashboard...
+                    </p>
+                </div>
             ) : (
             <>
                 <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -168,9 +170,12 @@ export default function DashboardPage() {
                     </h2>
 
                     {upcomingTasks.length === 0 ? (
-                        <p className="mt-3 text-sm text-muted-foreground">
-                            No upcoming tasks.
-                        </p>
+                        <div className="mt-3 rounded-lg border border-dashed p-6 text-center">
+  <p className="font-medium">No upcoming tasks</p>
+  <p className="mt-1 text-sm text-muted-foreground">
+    Tasks with due dates will appear here.
+  </p>
+</div>
                     ) : (
                         <div className="mt-3 space-y-3">
                             {upcomingTasks.map((task) => (
