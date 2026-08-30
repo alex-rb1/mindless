@@ -4,6 +4,29 @@ Mindless is a full-stack personal productivity app built for quickly capturing t
 
 The idea is simple: capture something immediately in your Inbox, then process it into a structured task when you're ready.
 
+## Preview
+
+![Mindless Dashboard](docs/landingpage.png)
+
+<details>
+<summary><strong>View more screenshots</strong></summary>
+
+<br>
+
+### Inbox
+
+<img src="docs/inbox.png" alt="Mindless Inbox" width="100%">
+
+### Process Inbox Item
+
+<img src="docs/process-task.png" alt="Mindless Process Task Dialog" width="100%">
+
+### Tasks
+
+<img src="docs/tasks.png" alt="Mindless Tasks" width="100%">
+
+</details>
+
 ## Features
 
 ### Authentication
