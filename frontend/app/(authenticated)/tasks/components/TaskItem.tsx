@@ -141,7 +141,7 @@ export default function TaskItem({
           </div>
 
           <div className="flex gap-2">
-            <Button onClick={onSaveEdit}>Save</Button>
+            <Button onClick={onSaveEdit} disabled={!editTitle.trim()}>Save</Button>
 
             <Button
               variant="outline"

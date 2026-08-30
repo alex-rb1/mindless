@@ -57,7 +57,10 @@ export default function InboxCaptureForm({
         </SelectContent>
       </Select>
 
-      <Button type="submit">
+      <Button 
+        type="submit" 
+        disabled={!title.trim()}
+      >
         Add
       </Button>
     </form>

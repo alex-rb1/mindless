@@ -73,7 +73,7 @@ export default function InboxItem({
             </SelectContent>
           </Select>
 
-          <Button type="button" onClick={onSaveEdit}>
+          <Button type="button" onClick={onSaveEdit} disabled={!editTitle.trim()}>
             Save
           </Button>
 

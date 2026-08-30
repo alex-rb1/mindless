@@ -76,7 +76,10 @@ export default function CreateTaskForm({
           </SelectContent>
         </Select>
 
-        <Button onClick={onCreate}>
+        <Button 
+          onClick={onCreate}
+          disabled={!title.trim()}
+        >
           Create Task
         </Button>
       </div>
