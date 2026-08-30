@@ -12,6 +12,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+
 type InboxItem = {
   id: number;
   title: string;
@@ -35,10 +44,28 @@ export default function InboxPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [processingItem, setProcessingItem] =
+    useState<InboxItem | null>(null);
+
+  const [processTitle, setProcessTitle] = useState("");
+  const [processDescription, setProcessDescription] = useState("");
+  const [processDueDate, setProcessDueDate] = useState("");
+  const [processPriority, setProcessPriority] =
+    useState<"LOW" | "MEDIUM" | "HIGH" | "">("");
+
   function startEditing(item: InboxItem) {
     setEditingId(item.id);
     setEditTitle(item.title);
     setEditPriority(item.priority ?? "");
+  }
+
+  function startProcessing(item: InboxItem) {
+    setProcessingItem(item);
+
+    setProcessTitle(item.title);
+    setProcessDescription("");
+    setProcessDueDate("");
+    setProcessPriority(item.priority ?? "");
   }
 
   async function loadItems() {
@@ -161,6 +188,48 @@ export default function InboxPage() {
         currentItems.filter((item) => item.id !== id)
     );
  }
+
+ async function handleProcessItem() {
+  if (!processingItem) return;
+
+  setError("");
+
+  try {
+    const response = await fetch(
+      `http://localhost:4000/tasks/process/${processingItem.id}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: processTitle,
+          description: processDescription,
+          ...(processDueDate && { dueDate: processDueDate }),
+          ...(processPriority && { priority: processPriority }),
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setError(data.error || "Failed to process inbox item.");
+      return;
+    }
+
+    setItems((currentItems) =>
+      currentItems.filter(
+        (item) => item.id !== processingItem.id
+      )
+    );
+
+    setProcessingItem(null);
+  } catch {
+    setError("Failed to process inbox item.");
+  }
+}
 
 return (
   <main className="mx-auto min-h-screen max-w-3xl p-6">
@@ -290,6 +359,12 @@ return (
               {editingId !== item.id && (
                 <div className="mt-3 flex justify-end gap-2">
                   <Button
+                    onClick={() => startProcessing(item)}
+                  >
+                    Process
+                  </Button>
+                  
+                  <Button
                     type="button"
                     variant="outline"
                     onClick={() => startEditing(item)}
@@ -311,5 +386,74 @@ return (
         </div>
       )}
     </div>
+    <Dialog
+      open={processingItem !== null}
+      onOpenChange={(open) => {
+        if (!open) {
+          setProcessingItem(null);
+        }
+      }}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Process into Task</DialogTitle>
+          <DialogDescription>
+            Add any details before converting this inbox item into a task.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <Input
+            value={processTitle}
+            onChange={(e) => setProcessTitle(e.target.value)}
+            placeholder="Task title"
+          />
+
+          <Input
+            value={processDescription}
+            onChange={(e) => setProcessDescription(e.target.value)}
+            placeholder="Description"
+          />
+
+          <Input
+            type="date"
+            value={processDueDate}
+            onChange={(e) => setProcessDueDate(e.target.value)}
+          />
+
+          <Select
+            value={processPriority}
+            onValueChange={(value) =>
+              setProcessPriority(
+                value as "LOW" | "MEDIUM" | "HIGH"
+              )
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Priority" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="LOW">Low</SelectItem>
+              <SelectItem value="MEDIUM">Medium</SelectItem>
+              <SelectItem value="HIGH">High</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => setProcessingItem(null)}
+          >
+            Cancel
+          </Button>
+
+          <Button onClick={handleProcessItem}>
+            Create Task
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </main>
 )};
