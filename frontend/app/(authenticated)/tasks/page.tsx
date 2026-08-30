@@ -260,7 +260,7 @@ export default function TasksPage() {
             />
 
         {error && (
-            <p className="mt-4 text-sm text-red-500">
+            <p className="mt-4 text-sm text-destructive">
                 {error}
             </p>
         )}

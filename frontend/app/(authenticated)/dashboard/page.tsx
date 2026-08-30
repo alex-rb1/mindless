@@ -107,14 +107,14 @@ export default function DashboardPage() {
             <div className="mt-4 flex gap-2">
                 <Link 
                     href="/inbox"
-                    className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium"
+                    className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium transition-colors hover:bg-muted"
                 >
                     Go to Inbox
                 </Link>
 
                 <Link 
                     href="/tasks"
-                    className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium"
+                    className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium transition-colors hover:bg-muted"
                 >
                     Go to Tasks
                 </Link>
@@ -122,7 +122,7 @@ export default function DashboardPage() {
 
 
             {error && (
-                <p className="mt-4 text-sm text-red-500">
+                <p className="mt-4 text-sm text-destructive">
                     {error}
                 </p>
             )}
@@ -171,11 +171,11 @@ export default function DashboardPage() {
 
                     {upcomingTasks.length === 0 ? (
                         <div className="mt-3 rounded-lg border border-dashed p-6 text-center">
-  <p className="font-medium">No upcoming tasks</p>
-  <p className="mt-1 text-sm text-muted-foreground">
-    Tasks with due dates will appear here.
-  </p>
-</div>
+                            <p className="font-medium">No upcoming tasks</p>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                                Tasks with due dates will appear here.
+                            </p>
+                        </div>
                     ) : (
                         <div className="mt-3 space-y-3">
                             {upcomingTasks.map((task) => (
