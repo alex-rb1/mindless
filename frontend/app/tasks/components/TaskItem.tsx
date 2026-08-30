@@ -29,6 +29,8 @@ type TaskItemProps = {
   onStartEditing: () => void;
   onSaveEdit: () => void;
   onCancelEdit: () => void;
+  onComplete: () => void;
+  onDelete: () => void;
 };
 
 // Displays a task and its editing UI
@@ -48,6 +50,8 @@ export default function TaskItem({
   onStartEditing,
   onSaveEdit,
   onCancelEdit,
+  onComplete,
+  onDelete,
 }: TaskItemProps) {
   return (
     <div className="rounded-lg border p-4">
@@ -147,12 +151,25 @@ export default function TaskItem({
             )}
           </div>
 
-          <div className="mt-3">
+          <div className="mt-3 flex gap-2">
+            {task.status !== "COMPLETED" && (
+                <Button onClick={onComplete}>
+                    Complete
+                </Button>
+            )}
+
             <Button
               variant="outline"
               onClick={onStartEditing}
             >
               Edit
+            </Button>
+
+            <Button
+                variant="destructive"
+                onClick={onDelete}
+            >
+                Delete
             </Button>
           </div>
         </>

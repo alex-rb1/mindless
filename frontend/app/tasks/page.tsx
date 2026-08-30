@@ -76,6 +76,68 @@ export default function TasksPage() {
         }
     }
 
+    async function completeTask(id: number) {
+        setError("");
+
+        try {
+            const response = await fetch(
+                `http://localhost:4000/tasks/${id}`,
+                {
+                    method: "PATCH",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        status: "COMPLETED",
+                    }),
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.error || "Failed to complete task.");
+                return;
+            }
+
+            setTasks((currentTasks) =>
+                currentTasks.map((task) =>
+                    task.id === id ? data.task : task
+                )
+            );
+        } catch {
+            setError("Failed to complete task.");
+        }
+    }
+
+    async function deleteTask(id: number) {
+        setError("");
+
+        try {
+            const response = await fetch(
+                 `http://localhost:4000/tasks/${id}`,
+                {
+                    method: "DELETE",
+                    credentials: "include",
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.error || "Failed to delete task.");
+                return;
+            }
+
+            setTasks((currentTasks) =>
+                currentTasks.filter((task) => task.id !== id)
+            );
+        } catch {
+            setError("Failed to delete task.")
+        }
+    }
+
     async function loadTasks() {
     try {
         const response = await fetch("http://localhost:4000/tasks", {
@@ -193,6 +255,8 @@ export default function TasksPage() {
                         onStartEditing={() => startEditing(task)}
                         onSaveEdit={() => saveEdit(task.id)}
                         onCancelEdit={() => setEditingId(null)}
+                        onComplete={() => completeTask(task.id)}
+                        onDelete={() => deleteTask(task.id)}
                     />
                 ))}
             </div>
