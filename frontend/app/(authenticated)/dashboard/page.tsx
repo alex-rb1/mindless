@@ -76,6 +76,19 @@ export default function DashboardPage() {
     const completedTaskCount = tasks.filter(
         (task) => task.status === "COMPLETED"
     ).length;
+
+    const upcomingTasks = tasks
+        .filter(
+            (task) =>
+                task.status !== "COMPLETED" &&
+                task.dueDate !== null
+        )
+        .sort(
+            (a, b) =>
+                new Date(a.dueDate!).getTime() -
+                new Date(b.dueDate!).getTime()
+        )
+        .slice(0, 5);
     
     return (
         <main className="mx-auto max-w-4xl p-6">
@@ -98,6 +111,7 @@ export default function DashboardPage() {
                     Loading dashboard...
                 </p>
             ) : (
+            <>
                 <div className="mt-6 grid gap-4 sm:grid-cols-3">
                     <div className="rounded-lg border p-4">
                         <p className="text-sm text-muted-foreground">
@@ -126,6 +140,35 @@ export default function DashboardPage() {
                         </p>
                     </div>
                 </div>
+
+                <section className="mt-8">
+                    <h2 className="text-lg font-semibold">
+                        Upcoming Tasks
+                    </h2>
+
+                    {upcomingTasks.length === 0 ? (
+                        <p className="mt-3 text-sm text-muted-foreground">
+                            No upcoming tasks.
+                        </p>
+                    ) : (
+                        <div className="mt-3 space-y-3">
+                            {upcomingTasks.map((task) => (
+                                <div
+                                    key={task.id}
+                                    className="rounded-lg border p-4"
+                                >
+                                    <p className="font-medium">{task.title}</p>
+
+                                    <p className="mt-1 text-sm text-muted-foreground">
+                                        Due{" "}
+                                        {new Date(task.dueDate!).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </section>
+            </>
             )}
         </main>
     );
