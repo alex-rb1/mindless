@@ -4,12 +4,14 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export default function AppNav() {
   const pathname = usePathname();
   const router = useRouter();
 
   async function handleLogout() {
-    await fetch("http://localhost:4000/auth/logout", {
+    await fetch(`${API_URL}/auth/logout`, {
         method: "POST",
         credentials: "include",
     });

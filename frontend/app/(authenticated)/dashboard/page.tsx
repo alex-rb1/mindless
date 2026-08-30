@@ -7,6 +7,8 @@ import { formatDate } from "@/lib/formatDate";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 type InboxItem = {
     id: number;
     title: string;
@@ -32,10 +34,10 @@ export default function DashboardPage() {
 
         try {
             const [inboxResponse, tasksResponse] = await Promise.all([
-                fetch("http://localhost:4000/inbox", {
+                fetch(`${API_URL}/inbox`, {
                     credentials: "include",
                 }),
-                fetch("http://localhost:4000/tasks", {
+                fetch(`${API_URL}/tasks`, {
                     credentials: "include",
                 }),
             ]);

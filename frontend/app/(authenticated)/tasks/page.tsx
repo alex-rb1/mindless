@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Priority, Task, TaskStatus } from "./types";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export default function TasksPage() {
     const router = useRouter();
     
@@ -43,7 +45,7 @@ export default function TasksPage() {
 
         try {
             const response = await fetch(
-                `http://localhost:4000/tasks/${id}`,
+                `${API_URL}/tasks/${id}`,
                 {
                     method: "PATCH",
                     credentials: "include",
@@ -84,7 +86,7 @@ export default function TasksPage() {
 
         try {
             const response = await fetch(
-                `http://localhost:4000/tasks/${id}`,
+                `${API_URL}/tasks/${id}`,
                 {
                     method: "PATCH",
                     credentials: "include",
@@ -119,7 +121,7 @@ export default function TasksPage() {
 
         try {
             const response = await fetch(
-                 `http://localhost:4000/tasks/${id}`,
+                 `${API_URL}/tasks/${id}`,
                 {
                     method: "DELETE",
                     credentials: "include",
@@ -143,7 +145,7 @@ export default function TasksPage() {
 
     async function loadTasks() {
     try {
-        const response = await fetch("http://localhost:4000/tasks", {
+        const response = await fetch(`${API_URL}/tasks`, {
             credentials: "include",
         });
 
@@ -171,7 +173,7 @@ export default function TasksPage() {
         setError("");
 
         try {
-            const response = await fetch("http://localhost:4000/tasks", {
+            const response = await fetch(`${API_URL}/tasks`, {
                 method: "POST",
                 credentials: "include",
                 headers: {

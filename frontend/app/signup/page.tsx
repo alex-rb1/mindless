@@ -16,6 +16,8 @@ import Link from "next/dist/client/link";
 
 import { useRouter } from "next/navigation";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export default function SignupPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -27,7 +29,7 @@ export default function SignupPage() {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-    const response = await fetch("http://localhost:4000/auth/register", {
+    const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

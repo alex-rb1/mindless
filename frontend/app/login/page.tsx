@@ -16,6 +16,8 @@ import {
 
 import Link from "next/link";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -27,7 +29,7 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:4000/auth/login", {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

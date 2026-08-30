@@ -6,6 +6,8 @@ import InboxItemCard from "./components/InboxItem"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 // Types
 import type { InboxItem, Priority } from "./types";
 
@@ -54,7 +56,7 @@ export default function InboxPage() {
   // Inbox API handlers
   async function loadItems() {
     try {
-    const response = await fetch("http://localhost:4000/inbox", {
+    const response = await fetch(`${API_URL}/inbox`, {
         credentials: "include",
     });
 
@@ -86,7 +88,7 @@ export default function InboxPage() {
         return;
     }
 
-    const response = await fetch (`http://localhost:4000/inbox/${id}`, {
+    const response = await fetch(`${API_URL}/inbox/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -125,7 +127,7 @@ export default function InboxPage() {
         return;
     }
 
-    const response = await fetch("http://localhost:4000/inbox", {
+    const response = await fetch(`${API_URL}/inbox`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -161,7 +163,7 @@ export default function InboxPage() {
   }, []);
 
   async function deleteItem(id: number) {
-    const response = await fetch(`http://localhost:4000/inbox/${id}`, {
+    const response = await fetch(`${API_URL}/inbox/${id}`, {
         method: "DELETE",
         credentials: "include",
     });
@@ -187,7 +189,7 @@ export default function InboxPage() {
 
   try {
     const response = await fetch(
-      `http://localhost:4000/tasks/process/${processingItem.id}`,
+      `${API_URL}/tasks/process/${processingItem.id}`,
       {
         method: "POST",
         credentials: "include",
