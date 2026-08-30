@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/formatDate";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -180,10 +181,10 @@ export default function TaskItem({
             )}
 
             {task.dueDate && (
-              <span>
+              <Badge variant="outline">
                 Due{" "}
-                {new Date(task.dueDate).toLocaleDateString()}
-              </span>
+                {formatDate(task.dueDate)}
+              </Badge>
             )}
           </div>
 

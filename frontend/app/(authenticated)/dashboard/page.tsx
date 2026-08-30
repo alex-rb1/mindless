@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { formatDate } from "@/lib/formatDate";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -179,10 +180,12 @@ export default function DashboardPage() {
                                 >
                                     <p className="font-medium">{task.title}</p>
 
-                                    <p className="mt-1 text-sm text-muted-foreground">
-                                        Due{" "}
-                                        {new Date(task.dueDate!).toLocaleDateString()}
-                                    </p>
+                                    <div className="mt-2">
+                                        <span className="inline-flex rounded-md bg-muted px-2 py-1 text-sm font-medium">
+                                            Due{" "}
+                                            {formatDate(task.dueDate!)}
+                                        </span>
+                                    </div>
                                 </div>
                             ))}
                         </div>
