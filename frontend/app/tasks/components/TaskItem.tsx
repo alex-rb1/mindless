@@ -152,7 +152,15 @@ export default function TaskItem({
         </div>
       ) : (
         <>
-          <h2 className="font-medium">{task.title}</h2>
+            <h2
+                className={
+                    task.status === "COMPLETED"
+                        ? "font-medium text-muted-foreground line-through"
+                        : "font-medium"
+                }
+            >
+                {task.title}
+            </h2>
 
           {task.description && (
             <p className="mt-1 text-sm text-muted-foreground">
@@ -161,7 +169,7 @@ export default function TaskItem({
           )}
 
           <div className="mt-3 flex flex-wrap gap-3 text-sm text-muted-foreground">
-            <Badge varaint="secondary">
+            <Badge variant="secondary">
                 {formatStatus(task.status)}
             </Badge>
 

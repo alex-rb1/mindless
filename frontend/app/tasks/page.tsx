@@ -202,6 +202,14 @@ export default function TasksPage() {
         loadTasks();
     }, []);
   
+    const activeTasks = tasks.filter(
+        (task) => task.status !== "COMPLETED"
+    );
+
+    const completedTasks = tasks.filter(
+        (task) => task.status === "COMPLETED"
+    );
+
     return (
         <main className="mx-auto max-w-4xl p-6">
             <h1 className="text-2xl font-semibold">Tasks</h1>
@@ -233,32 +241,71 @@ export default function TasksPage() {
                 No tasks yet.
             </p>
         ) : (
-            <div className="mt-6 space-y-3">
-                {tasks.map((task) => (
-                    <TaskItem
-                        key={task.id}
-                        task={task}
+            <div className="mt-6 space-y-8">
+                <section>
+                    <h2 className="mb-3 text-lg font-semibold">
+                        Active Tasks
+                    </h2>
 
-                        isEditing={editingId === task.id}
-                        editTitle={editTitle}
-                        editDescription={editDescription}
-                        editDueDate={editDueDate}
-                        editPriority={editPriority}
-                        editStatus={editStatus}
+                    <div className="space-y-3">
+                        {activeTasks.map((task) => (
+                            <TaskItem
+                                key={task.id}
+                                task={task}
+                                isEditing={editingId === task.id}
+                                editTitle={editTitle}
+                                editDescription={editDescription}
+                                editDueDate={editDueDate}
+                                editPriority={editPriority}
+                                editStatus={editStatus}
+                                onEditTitleChange={setEditTitle}
+                                onEditDescriptionChange={setEditDescription}
+                                onEditDueDateChange={setEditDueDate}
+                                onEditPriorityChange={setEditPriority}
+                                onEditStatusChange={setEditStatus}
+                                onStartEditing={() => startEditing(task)}
+                                onSaveEdit={() => saveEdit(task.id)}
+                                onCancelEdit={() => setEditingId(null)}
+                                onComplete={() => completeTask(task.id)}
+                                onDelete={() => deleteTask(task.id)}
+                            />
+                        ))}
+                     </div>
+                </section>
 
-                        onEditTitleChange={setEditTitle}
-                        onEditDescriptionChange={setEditDescription}
-                        onEditDueDateChange={setEditDueDate}
-                        onEditPriorityChange={setEditPriority}
-                        onEditStatusChange={setEditStatus}
+                {/* Completed Tasks Section*/}
+                {completedTasks.length > 0 && (
+                    <section>
+                        <h2 className="mb-3 text-lg font-semibold">
+                            Completed Tasks
+                        </h2>
 
-                        onStartEditing={() => startEditing(task)}
-                        onSaveEdit={() => saveEdit(task.id)}
-                        onCancelEdit={() => setEditingId(null)}
-                        onComplete={() => completeTask(task.id)}
-                        onDelete={() => deleteTask(task.id)}
-                    />
-                ))}
+                        <div className="space-y-3">
+                            {completedTasks.map((task) => (
+                                <TaskItem
+                                    key={task.id}
+                                    task={task}
+                                    isEditing={editingId === task.id}
+                                    editTitle={editTitle}
+                                    editDescription={editDescription}
+                                    editDueDate={editDueDate}
+                                    editPriority={editPriority}
+                                    editStatus={editStatus}
+                                    onEditTitleChange={setEditTitle}
+                                    onEditDescriptionChange={setEditDescription}
+                                    onEditDueDateChange={setEditDueDate}
+                                    onEditPriorityChange={setEditPriority}
+                                    onEditStatusChange={setEditStatus}
+                                    onStartEditing={() => startEditing(task)}
+                                    onSaveEdit={() => saveEdit(task.id)}
+                                    onCancelEdit={() => setEditingId(null)}
+                                    onComplete={() => completeTask(task.id)}
+                                    onDelete={() => deleteTask(task.id)}
+                                />
+                            ))}
+                        </div>
+                    </section>
+                )}
             </div>
             )}
         </main>
