@@ -1,6 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { findUserByEmail, hashPassword, createUser, comparePassword, createSession, deleteSession } from "../services/authService.js";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export async function register(
   req: Request,
   res: Response,
@@ -26,6 +28,15 @@ export async function register(
     const passwordHash = await hashPassword(password);
 
     const user = await createUser(name, email, passwordHash);
+
+    const session = await createSession(user.id);
+
+    res.cookie("sessionToken", session.token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      expires: session.expiresAt,
+    });
 
     return res.status(201).json({
       user: {
@@ -76,8 +87,8 @@ export async function login(
 
     res.cookie("sessionToken", session.token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       expires: session.expiresAt,
     });
 
@@ -118,8 +129,8 @@ export async function logout(
 
     res.clearCookie("sessionToken", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     });
 
     return res.status(200).json({

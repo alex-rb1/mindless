@@ -34,6 +34,7 @@ export default function SignupPage() {
         headers: {
             "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
             name,
             email,
@@ -50,7 +51,7 @@ export default function SignupPage() {
     }
 
     setError("");
-    router.push("/login");
+    router.push("/dashboard");
     }
 
 return (

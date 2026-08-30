@@ -7,13 +7,15 @@ import taskRouter from "./routes/tasks.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { requireAuth } from "./middleware/requireAuth.js";
 
+const FRONTEND_URL =
+  process.env.FRONTEND_URL ?? "http://localhost:3000";
 
 const app = express();
 
 // General middleware
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: FRONTEND_URL,
     credentials: true,
   })
 );
