@@ -224,7 +224,7 @@ export default function InboxPage() {
 
 // Render
 return (
-  <main className="mx-auto min-h-screen max-w-3xl p-6">
+  <main className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6">
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Inbox</h1>

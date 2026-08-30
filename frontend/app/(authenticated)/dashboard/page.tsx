@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
 type InboxItem = {
     id: number;
     title: string;
@@ -91,7 +94,7 @@ export default function DashboardPage() {
         .slice(0, 5);
     
     return (
-        <main className="mx-auto max-w-4xl p-6">
+        <main className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6">
             <h1 className="text-2xl font-semibold">
                 Dashboard
             </h1>
@@ -99,6 +102,23 @@ export default function DashboardPage() {
             <p className="mt-1 text-muted-foreground">
                 An overview of your work.
             </p>
+
+            <div className="mt-4 flex gap-2">
+                <Link 
+                    href="/inbox"
+                    className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium"
+                >
+                    Go to Inbox
+                </Link>
+
+                <Link 
+                    href="/tasks"
+                    className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium"
+                >
+                    Go to Tasks
+                </Link>
+            </div>
+
 
             {error && (
                 <p className="mt-4 text-sm text-red-500">

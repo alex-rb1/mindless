@@ -20,7 +20,18 @@ export default function AppNav() {
   return (
     <nav className="border-b">
       <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <div className="flex items-center gap-6 sm:gap-6">
+        <div className="flex items-center gap-4 sm:gap-6">
+        <Link
+            href="/dashboard"
+            className={
+                pathname === "/dashboard"
+                ? "font-semibold"
+                : "text-muted-foreground"
+            }
+        >
+            Dashboard
+        </Link>
+
         <Link
           href="/inbox"
           className={
