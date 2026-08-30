@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -53,6 +54,29 @@ export default function TaskItem({
   onComplete,
   onDelete,
 }: TaskItemProps) {
+  
+    function formatStatus(status: TaskStatus) {
+        switch (status) {
+            case "TODO":
+                return "To Do";
+            case "IN_PROGRESS":
+                return "In Progress";
+            case "COMPLETED":
+                return "Completed";
+        }
+    }
+
+    function formatPriority(priority: Priority) {
+        switch (priority) {
+            case "LOW":
+                return "Low";
+            case "MEDIUM":
+                return "Medium";
+            case "HIGH":
+                return "High";
+        }
+    }
+
   return (
     <div className="rounded-lg border p-4">
       {isEditing ? (
@@ -137,10 +161,14 @@ export default function TaskItem({
           )}
 
           <div className="mt-3 flex flex-wrap gap-3 text-sm text-muted-foreground">
-            <span>{task.status}</span>
+            <Badge varaint="secondary">
+                {formatStatus(task.status)}
+            </Badge>
 
             {task.priority && (
-              <span>{task.priority}</span>
+              <Badge variant="outline">
+                {formatPriority(task.priority)}
+              </Badge>
             )}
 
             {task.dueDate && (
