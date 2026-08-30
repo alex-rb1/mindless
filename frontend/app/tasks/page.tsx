@@ -210,6 +210,31 @@ export default function TasksPage() {
         (task) => task.status === "COMPLETED"
     );
 
+    function renderTask(task: Task) {
+        return (
+            <TaskItem
+                key={task.id}
+                task={task}
+                isEditing={editingId === task.id}
+                editTitle={editTitle}
+                editDescription={editDescription}
+                editDueDate={editDueDate}
+                editPriority={editPriority}
+                editStatus={editStatus}
+                onEditTitleChange={setEditTitle}
+                onEditDescriptionChange={setEditDescription}
+                onEditDueDateChange={setEditDueDate}
+                onEditPriorityChange={setEditPriority}
+                onEditStatusChange={setEditStatus}
+                onStartEditing={() => startEditing(task)}
+                onSaveEdit={() => saveEdit(task.id)}
+                onCancelEdit={() => setEditingId(null)}
+                onComplete={() => completeTask(task.id)}
+                onDelete={() => deleteTask(task.id)}
+            />
+        );
+    }
+
     return (
         <main className="mx-auto max-w-4xl p-6">
             <h1 className="text-2xl font-semibold">Tasks</h1>
@@ -248,28 +273,7 @@ export default function TasksPage() {
                     </h2>
 
                     <div className="space-y-3">
-                        {activeTasks.map((task) => (
-                            <TaskItem
-                                key={task.id}
-                                task={task}
-                                isEditing={editingId === task.id}
-                                editTitle={editTitle}
-                                editDescription={editDescription}
-                                editDueDate={editDueDate}
-                                editPriority={editPriority}
-                                editStatus={editStatus}
-                                onEditTitleChange={setEditTitle}
-                                onEditDescriptionChange={setEditDescription}
-                                onEditDueDateChange={setEditDueDate}
-                                onEditPriorityChange={setEditPriority}
-                                onEditStatusChange={setEditStatus}
-                                onStartEditing={() => startEditing(task)}
-                                onSaveEdit={() => saveEdit(task.id)}
-                                onCancelEdit={() => setEditingId(null)}
-                                onComplete={() => completeTask(task.id)}
-                                onDelete={() => deleteTask(task.id)}
-                            />
-                        ))}
+                        {activeTasks.map(renderTask)}
                      </div>
                 </section>
 
@@ -281,28 +285,7 @@ export default function TasksPage() {
                         </h2>
 
                         <div className="space-y-3">
-                            {completedTasks.map((task) => (
-                                <TaskItem
-                                    key={task.id}
-                                    task={task}
-                                    isEditing={editingId === task.id}
-                                    editTitle={editTitle}
-                                    editDescription={editDescription}
-                                    editDueDate={editDueDate}
-                                    editPriority={editPriority}
-                                    editStatus={editStatus}
-                                    onEditTitleChange={setEditTitle}
-                                    onEditDescriptionChange={setEditDescription}
-                                    onEditDueDateChange={setEditDueDate}
-                                    onEditPriorityChange={setEditPriority}
-                                    onEditStatusChange={setEditStatus}
-                                    onStartEditing={() => startEditing(task)}
-                                    onSaveEdit={() => saveEdit(task.id)}
-                                    onCancelEdit={() => setEditingId(null)}
-                                    onComplete={() => completeTask(task.id)}
-                                    onDelete={() => deleteTask(task.id)}
-                                />
-                            ))}
+                            {completedTasks.map(renderTask)}
                         </div>
                     </section>
                 )}
